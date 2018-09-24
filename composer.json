@@ -1,0 +1,41 @@
+{
+    "name": "strider-tech/peach-payments",
+    "description": "Peach Payments integration for Laravel",
+    "version": "1.0.0",
+    "keywords": [
+        "peach payments",
+        "peach payments api",
+        "peach payments for laravel",
+        "laravel payments",
+        "payments api"
+    ],
+    "require": {
+        "peach/oppwa": "^1.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zhilskiy, Dmitriy",
+            "email": "dmitry.zhilsky@stridertech.co.za"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "StriderTech\\PeachPayments\\":"src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "StriderTech\\PeachPayments\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "StriderTech\\PeachPayments\\PeachPaymentsServiceProvider"
+            ]
+        }
+    }
+}
