@@ -17,11 +17,13 @@ class CreatePaymentCardsTable extends Migration
             $table->uuid('id');
             $table->string('user_id');
             $table->string('payment_remote_id');
+            $table->string('number')->nullable();
             $table->string('brand');
             $table->string('holder');
             $table->string('last_four');
             $table->integer('expiry_month');
             $table->integer('expiry_year');
+            $table->string('cvv')->nullable();
             $table->string('type');
             $table->boolean('is_primary');
             $table->timestamps();

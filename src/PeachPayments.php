@@ -2,30 +2,28 @@
 
 namespace StriderTech\PeachPayments;
 
-use App\User;
 use GuzzleHttp\Exception\RequestException;
-use Peach\Oppwa\Cards\Brands;
-use Peach\Oppwa\Cards\Delete;
-use Peach\Oppwa\Cards\Store;
-use Peach\Oppwa\Client;
-use Peach\Oppwa\Configuration;
-use Peach\Oppwa\Payments\Status;
-use Peach\Oppwa\ResponseJson;
+use StriderTech\PeachPayments\Cards\Brands;
+use StriderTech\PeachPayments\Cards\Delete;
+use StriderTech\PeachPayments\Cards\Store;
+use StriderTech\PeachPayments\Enums\CardBrand;
+use StriderTech\PeachPayments\Payments\Status;
 
-/**
- * Class PeachPayments
- * @package App\Helpers
- */
 class PeachPayments
 {
     /**
      * @var Client
      */
-    private $client;
+    public $client;
     /**
      * @var array
      */
     private $config = [];
+
+    /**
+     * @var PaymentCard
+     */
+    public $card;
 
     /**
      * PeachPayments constructor.
@@ -46,23 +44,14 @@ class PeachPayments
     }
 
     /**
-     * todo not using for now, keep for future
-     *
-     * @return \stdClass
+     * @param Store $store
+     * @return Store
      */
-    public function storeCard()
+    public function storeCard(Store $store)
     {
-        $storeCard = new Store($this->client);
+        $store->process();
 
-        $storeCardResult = $storeCard->setCardBrand(Brands::MASTERCARD)
-            ->setCardNumber('5454545454545454')
-            ->setCardHolder('Jane Jones')
-            ->setCardExpiryMonth('05')
-            ->setCardExpiryYear('2020')
-            ->setCardCvv('123')
-            ->process();
-
-        return $storeCardResult;
+        return $store;
     }
 
     /**
@@ -80,7 +69,7 @@ class PeachPayments
 
     /**
      * @param $transactionId
-     * @return mixed|\Peach\Oppwa\ResponseJson
+     * @return mixed|ResponseJson
      */
     public function getPaymentStatus($transactionId)
     {
@@ -93,20 +82,22 @@ class PeachPayments
     }
 
     /**
-     * @param User $user
-     * @param mixed|ResponseJson $paymentData
-     * @return User
+     * @param PaymentCard $paymentCard
+     * @return \stdClass
      */
-    public function fromPayment(User $user, $paymentData)
+    public function fromPaymentCard(PaymentCard $paymentCard)
     {
-        $user->payment_remote_id = $paymentData->getId();
-        $user->card_brand = $paymentData->getPaymentBrand();
-        $user->card_holder = $paymentData->getCardHolder();
-        $user->card_last_four = $paymentData->getCardLast4Digits();
-        $user->card_expiry_month = $paymentData->getCardExpiryMonth();
-        $user->card_expiry_year = $paymentData->getCardExpiryYear();
+        $storeCard = new Store($this->client);
 
-        return $user;
+        $storeCardResult = $storeCard->setCardBrand($paymentCard->getCardBrand())
+            ->setCardNumber($paymentCard->getCardNumber())
+            ->setCardHolder($paymentCard->getCardHolder())
+            ->setCardExpiryMonth($paymentCard->getCardExpiryMonth())
+            ->setCardExpiryYear($paymentCard->getCardExpiryYear())
+            ->setCardCvv($paymentCard->getCardCvv())
+            ->process();
+
+        return $storeCardResult;
     }
 
     /**

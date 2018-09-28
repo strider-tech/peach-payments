@@ -10,8 +10,8 @@
         "payments api"
     ],
     "require": {
-        "peach/oppwa": "^1.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "inacho/php-credit-card-validator": "^1.0"
     },
     "license": "MIT",
     "authors": [

@@ -1,5 +1,8 @@
 # Peach Payments Integration for Laravel
 
+## TODO
+- colorful labels (tags)
+
 ## Installation
 ```
 php artisan migrate
@@ -12,15 +15,14 @@ $peachPaymentsService = app()->get('peachpayments');
 ## Examples
 
 ```
-$paymentCard = PaymentCard::create([
-    'user_id' => $userId,
-    'payment_remote_id' => $request->token,
-    'brand' => 'VISA',
-    'holder' => 'John Doe',
-    'last_four' => mt_rand(1000, 9999),
-    'expiry_month' => Carbon::now()->addMonth()->format('n'),
-    'expiry_year' => Carbon::now()->addYear()->format('Y'),
-    'type' => $request->type,
-    'is_primary' => $request->is_primary
-]);
+$paymentService = new PeachPayments();
+$card = new Store($paymentService->client);
+$card->setCardBrand(CardBrand::MASTERCARD)
+    ->setCardNumber('5454545454545454')
+    ->setCardHolder('Jane Jones')
+    ->setCardExpiryMonth('05')
+    ->setCardExpiryYear('2020')
+    ->setCardCvv('123');
+
+$paymentService->storeCard($card);
 ```

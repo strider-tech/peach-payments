@@ -2,10 +2,9 @@
 
 namespace StriderTech\PeachPayments;
 
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use StriderTech\PeachPayments\Cards\Store;
 
+// todo, for now is not using
 trait Billable
 {
     public function charge($amount, array $options = [])
@@ -14,6 +13,11 @@ trait Billable
     }
 
     public function refund($charge, array $options = [])
+    {
+
+    }
+
+    public function storeCard()
     {
 
     }
