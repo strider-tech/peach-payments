@@ -5,6 +5,7 @@ namespace StriderTech\PeachPayments\Cards;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
+use StriderTech\PeachPayments\PaymentCard;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
@@ -31,6 +32,11 @@ class Delete implements ClientInterface
     private $transactionId;
 
     /**
+     * @var PaymentCard
+     */
+    private $paymentCard;
+
+    /**
      * Delete constructor.
      * @param Client $client
      * @param string $transactionId
@@ -38,15 +44,33 @@ class Delete implements ClientInterface
     public function __construct(Client $client, $transactionId = null)
     {
         $this->client = $client;
+
         if (!empty($transactionId)) {
             $this->transactionId = $transactionId;
         }
     }
 
     /**
+     * @return mixed
+     */
+    public function getPaymentCard()
+    {
+        return $this->paymentCard;
+    }
+
+    /**
+     * @param PaymentCard $paymentCard
+     */
+    public function setPaymentCard(PaymentCard $paymentCard)
+    {
+        $this->paymentCard = $paymentCard;
+        $this->setTransactionId($this->paymentCard->getPaymentRemoteId());
+    }
+
+    /**
      * Process delete procedure.
      *
-     * @return \stdClass
+     * @return ResponseJson|string
      * @throws \Exception
      */
     public function process()
@@ -59,7 +83,13 @@ class Delete implements ClientInterface
 
         try {
             $response = $client->delete($this->buildUrl());
-            return new ResponseJson((string)$response->getBody(), true);
+            $jsonResponse = $this->handle($response);
+
+            if ($jsonResponse) {
+                $this->dbProcess($jsonResponse);
+            }
+
+            return $jsonResponse;
         } catch (RequestException $e) {
             return new ResponseJson((string)$e->getResponse()->getBody(), false);
         }
@@ -99,13 +129,25 @@ class Delete implements ClientInterface
     }
 
     /**
+     * @param $response
+     * @return ResponseJson|string
+     */
+    public function handle($response)
+    {
+        $body = (string)$response->getBody();
+        $jsonResponse = new ResponseJson($body, true);
+
+        return $jsonResponse;
+    }
+
+    /**
      * Make process with database by API response
      *
-     * @param $response
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param ResponseJson $response
      */
     public function dbProcess($response)
     {
-        // TODO: Implement dbProcess() method.
+        $card = PaymentCard::where('remote_id', $this->getTransactionId())->first();
+        $card->delete();
     }
 }

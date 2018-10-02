@@ -6,7 +6,6 @@ use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Cards\Brands;
 use StriderTech\PeachPayments\Cards\Delete;
 use StriderTech\PeachPayments\Cards\Store;
-use StriderTech\PeachPayments\Enums\CardBrand;
 use StriderTech\PeachPayments\Payments\Status;
 
 class PeachPayments
@@ -44,6 +43,26 @@ class PeachPayments
     }
 
     /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * Get the entity instance by Transaction ID.
+     * @param $remoteId
+     * @return mixed
+     */
+    protected function getUserByRemoteId($remoteId)
+    {
+        $model = config('peachpayments.model');
+
+        return (new $model)->where('remote_id', $remoteId)->first();
+    }
+
+    /**
      * @param Store $store
      * @return Store
      */
@@ -55,16 +74,14 @@ class PeachPayments
     }
 
     /**
-     * @param Store $storeCardResult
-     * @return \stdClass
+     * @param Delete $cardDelete
+     * @return Delete
      */
-    public function deleteCard(Store $storeCardResult)
+    public function deleteCard(Delete $cardDelete)
     {
-        $cardDelete = new Delete($this->client);
-        $cardDelete->setTransactionId($storeCardResult->getId());
-        $cardDeleteResult = $cardDelete->process();
+        $cardDelete->process();
 
-        return $cardDeleteResult;
+        return $cardDelete;
     }
 
     /**

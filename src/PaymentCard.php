@@ -3,13 +3,14 @@
 namespace StriderTech\PeachPayments;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 use StriderTech\PeachPayments\Cards\Store;
 
 /**
  * Class PaymentCard
  * @package StriderTech
  */
-class PaymentCard extends BasicModel
+class PaymentCard extends Model
 {
     use SoftDeletes;
 
@@ -56,6 +57,24 @@ class PaymentCard extends BasicModel
     public function setCardBrand($cardBrand)
     {
         $this->brand = $cardBrand;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param mixed $userId
+     * @return $this
+     */
+    public function setUserId($userId)
+    {
+        $this->user_id = $userId;
         return $this;
     }
 
@@ -150,6 +169,76 @@ class PaymentCard extends BasicModel
     }
 
     /**
+     * @return mixed
+     */
+    public function getPaymentRemoteId()
+    {
+        return $this->payment_remote_id;
+    }
+
+    /**
+     * @param mixed $paymentRemoteId
+     * @return $this
+     */
+    public function setPaymentRemoteId($paymentRemoteId)
+    {
+        $this->payment_remote_id = $paymentRemoteId;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastFour()
+    {
+        return $this->last_four;
+    }
+
+    /**
+     * @param mixed $lastFour
+     * @return $this
+     */
+    public function setLastFour($lastFour)
+    {
+        $this->last_four = $lastFour;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsPrimary()
+    {
+        return $this->is_primary;
+    }
+
+    /**
+     * @param mixed $isPrimary
+     */
+    public function setIsPrimary($isPrimary)
+    {
+        $this->is_primary = $isPrimary;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
      * @param Store $store
      * @return $this
      */
@@ -160,7 +249,13 @@ class PaymentCard extends BasicModel
             ->setCardHolder($store->getCardHolder())
             ->setCardExpiryMonth($store->getCardExpiryMonth())
             ->setCardExpiryYear($store->getCardExpiryYear())
-            ->setCardCvv($store->getCardCvv());
+            ->setCardCvv($store->getCardCvv())
+            ->setLastFour($store->getLastFour())
+            ->setUserId($store->getUserId())
+            ->setPaymentRemoteId($store->getPaymentRemoteId())
+//            ->setType($store->getType())
+//            ->setIsPrimary($store->getIsPrimary())
+        ;
 
         return $this;
     }

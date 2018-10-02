@@ -17,7 +17,7 @@ class PeachPaymentsFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'peachpayments';
+        return 'PeachPayments';
     }
 
 }

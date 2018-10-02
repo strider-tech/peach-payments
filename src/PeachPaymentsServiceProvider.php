@@ -27,13 +27,8 @@ class PeachPaymentsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(PeachPayments::class, function () {
+        $this->app->bind('PeachPayments', function ($app) {
             return new PeachPayments(config('peachpayments'));
         });
-        $this->app->alias(PeachPayments::class, 'peachpayments');
-
-//        $this->app->bind('peachpayments', function ($app) {
-//            return new PeachPayments(config('peachpayments'));
-//        });
     }
 }

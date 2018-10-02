@@ -12,7 +12,6 @@ interface ClientInterface
      * Make process with database by API response
      *
      * @param $response
-     * @return \Illuminate\Database\Eloquent\Model
      */
     public function dbProcess($response);
 
@@ -29,5 +28,13 @@ interface ClientInterface
      * @return string
      */
     public function buildUrl();
+
+    /**
+     * Handle response from PP API
+     *
+     * @param $response
+     * @return string
+     */
+    public function handle($response);
 
 }

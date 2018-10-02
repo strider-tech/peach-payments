@@ -14,7 +14,7 @@ class CreatePaymentCardsTable extends Migration
     public function up()
     {
         Schema::create('payment_cards', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->increments('id');
             $table->string('user_id');
             $table->string('payment_remote_id');
             $table->string('number')->nullable();
@@ -24,12 +24,8 @@ class CreatePaymentCardsTable extends Migration
             $table->integer('expiry_month');
             $table->integer('expiry_year');
             $table->string('cvv')->nullable();
-            $table->string('type');
-            $table->boolean('is_primary');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->primary('id');
         });
     }
 
