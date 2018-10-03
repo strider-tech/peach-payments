@@ -1,7 +1,4 @@
-# Peach Payments Integration for Laravel
-
-## TODO
-- colorful labels (tags)
+# Peach Payments Integration for Laravel [![stability][0]][1]
 
 ## Installation
 
@@ -42,11 +39,19 @@ $card->setCardBrand(CardBrand::MASTERCARD)
 \PeachPayments::storeCard($card);
 ```
 
+### Register Card by Token
+
+```
+\PeachPayments::storeCardByToken($token, Auth::user()->id);
+```
+
 ### Delete Card
 
 ```
-$cardDelete = new Delete(\PeachPayments::getClient());
-$cardDelete->setPaymentCard($paymentCard);
-
-\PeachPayments::deleteCard($cardDelete);
+$paymentCard = PaymentCard::find($paymentCardId);
+\PeachPayments::deleteCard($paymentCard);
 ```
+
+[0]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
+[1]: https://nodejs.org/api/documentation.html#documentation_stability_index
+[2]: https://img.shields.io/github/tag/strider-tech/peach-payments.svg

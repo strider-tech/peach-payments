@@ -261,6 +261,23 @@ class PaymentCard extends Model
     }
 
     /**
+     * @param ResponseJson $responseJson
+     * @return $this
+     */
+    public function fromAPIResponse(ResponseJson $responseJson)
+    {
+        $this->setCardBrand($responseJson->getPaymentBrand())
+            ->setCardHolder($responseJson->getCardHolder())
+            ->setCardExpiryMonth($responseJson->getCardExpiryMonth())
+            ->setCardExpiryYear($responseJson->getCardExpiryYear())
+            ->setLastFour($responseJson->getCardLast4Digits())
+            ->setPaymentRemoteId($responseJson->getId())
+        ;
+
+        return $this;
+    }
+
+    /**
      * @param $userId
      * @param $type
      */

@@ -182,4 +182,15 @@ class Debit extends AbstractCard implements ClientInterface
     {
         // TODO: Implement dbProcess() method.
     }
+
+    /**
+     * Handle response from PP API
+     *
+     * @param $response
+     * @return string
+     */
+    public function handle($response)
+    {
+        // TODO: Implement handle() method.
+    }
 }

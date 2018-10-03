@@ -5,6 +5,7 @@ namespace StriderTech\PeachPayments\Payments;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
+use StriderTech\PeachPayments\Enums\CardException;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
@@ -14,8 +15,6 @@ use StriderTech\PeachPayments\ResponseJson;
  */
 class Status implements ClientInterface
 {
-    const EXCEPTION_EMPTY_STATUS_TID = 500;
-
     /**
      * @var Client
      */
@@ -34,28 +33,36 @@ class Status implements ClientInterface
     public function __construct(Client $client, $transactionId = null)
     {
         $this->client = $client;
+
         if (!empty($transactionId)) {
             $this->transactionId = $transactionId;
         }
     }
 
     /**
-     * @return ResponseJson
+     * @return ResponseJson|string
      * @throws \Exception
      */
     public function process()
     {
         if (empty($this->getTransactionId())) {
-            throw new \Exception("Transaction Id can not be empty", self::EXCEPTION_EMPTY_STATUS_TID);
+            throw new \Exception("Transaction Id can not be empty", CardException::EXCEPTION_EMPTY_STATUS_TID);
         }
 
         $client = $this->client->getClient();
 
         try {
             $response = $client->get($this->buildUrl());
-            return new ResponseJson((string)$response->getBody(), true);
+            $jsonResponse = $this->handle($response);
+
+            if ($jsonResponse->isSuccess()) {
+                $this->dbProcess($jsonResponse);
+            }
+
+            return $jsonResponse;
         } catch (RequestException $e) {
-            return new ResponseJson((string)$e->getResponse()->getBody(), false);
+            throw new \Exception((string)$e->getResponse()->getBody());
+//            return new ResponseJson((string)$e->getResponse()->getBody(), false);
         }
     }
 
@@ -88,8 +95,26 @@ class Status implements ClientInterface
         return $this;
     }
 
+    /**
+     * @param $response
+     * @return bool
+     */
     public function dbProcess($response)
     {
-        // TODO: Implement dbProcess() method.
+        return true;
+    }
+
+    /**
+     * Handle response from PP API
+     *
+     * @param $response
+     * @return ResponseJson
+     */
+    public function handle($response)
+    {
+        $body = (string)$response->getBody();
+        $jsonResponse = new ResponseJson($body, true);
+
+        return $jsonResponse;
     }
 }

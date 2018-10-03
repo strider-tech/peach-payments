@@ -1,17 +1,31 @@
 <?php
 
-namespace StriderTech\PeachPayments\Test;
+namespace StriderTech\PeachPayments\Tests;
 
-use StriderTech\PeachPayments;
+use StriderTech\PeachPayments\Client;
 
 class PeachPaymentsTest extends TestCase
 {
     /**
-     * Check that the multiply method returns correct result
+     * Getting facade access
      * @return void
      */
-    public function testCorrectValue()
+    public function testInitFacade()
     {
-//        $this->assertSame(PeachPayments::get());
+        \PeachPayments::shouldReceive('getClient')
+            ->once()
+        ;
+
+        \PeachPayments::getClient();
+    }
+
+    /**
+     * Getting facade client
+     */
+    public function testGetClient()
+    {
+        $client = \PeachPayments::getClient();
+
+        $this->assertInstanceOf(Client::class, $client);
     }
 }

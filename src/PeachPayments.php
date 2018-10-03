@@ -3,7 +3,6 @@
 namespace StriderTech\PeachPayments;
 
 use GuzzleHttp\Exception\RequestException;
-use StriderTech\PeachPayments\Cards\Brands;
 use StriderTech\PeachPayments\Cards\Delete;
 use StriderTech\PeachPayments\Cards\Store;
 use StriderTech\PeachPayments\Payments\Status;
@@ -51,60 +50,88 @@ class PeachPayments
     }
 
     /**
-     * Get the entity instance by Transaction ID.
-     * @param $remoteId
-     * @return mixed
-     */
-    protected function getUserByRemoteId($remoteId)
-    {
-        $model = config('peachpayments.model');
-
-        return (new $model)->where('remote_id', $remoteId)->first();
-    }
-
-    /**
      * @param Store $store
-     * @return Store
+     * @return ResponseJson|string
      */
     public function storeCard(Store $store)
     {
-        $store->process();
+        $result = $store->process();
 
-        return $store;
+        return $result;
     }
 
     /**
-     * @param Delete $cardDelete
-     * @return Delete
+     * @param string $token
+     * @param $userId
+     * @return ResponseJson|string
      */
-    public function deleteCard(Delete $cardDelete)
+    public function storeCardByToken($token, $userId)
     {
-        $cardDelete->process();
+        $paymentStatus = new Status($this->getClient());
+        $paymentStatus->setTransactionId($token);
+        $paymentStatusResult = $paymentStatus->process();
 
-        return $cardDelete;
+        $card = new PaymentCard();
+        $card->fromAPIResponse($paymentStatusResult);
+        $card->setUserId($userId);
+        $card->save();
+
+        return $paymentStatusResult;
     }
 
     /**
-     * @param $transactionId
+     * @param $token
      * @return mixed|ResponseJson
      */
-    public function getPaymentStatus($transactionId)
+    public function getPaymentStatusByToken($token)
     {
-        $paymentStatus = new Status($this->client);
+        $paymentStatus = new Status($this->getClient());
+        $paymentStatus->setTransactionId($token);
         $paymentStatusResult = $paymentStatus
-            ->setTransactionId($transactionId)
+            ->setTransactionId($token)
             ->process();
 
         return $paymentStatusResult;
     }
 
     /**
+     * @param $token
+     * @return mixed|ResponseJson
+     */
+    public function getCardByToken($token)
+    {
+        return PaymentCard::where('payment_remote_id', $token)->first();
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getCardById($id)
+    {
+        return PaymentCard::find($id);
+    }
+
+    /**
      * @param PaymentCard $paymentCard
-     * @return \stdClass
+     * @return ResponseJson|string
+     */
+    public function deleteCard(PaymentCard $paymentCard)
+    {
+        $cardDelete = new Delete($this->getClient());
+        $cardDelete->setPaymentCard($paymentCard);
+        $result = $cardDelete->process();
+
+        return $result;
+    }
+
+    /**
+     * @param PaymentCard $paymentCard
+     * @return ResponseJson|string
      */
     public function fromPaymentCard(PaymentCard $paymentCard)
     {
-        $storeCard = new Store($this->client);
+        $storeCard = new Store($this->getClient());
 
         $storeCardResult = $storeCard->setCardBrand($paymentCard->getCardBrand())
             ->setCardNumber($paymentCard->getCardNumber())
@@ -124,12 +151,12 @@ class PeachPayments
     public function getNotificationStatus($resourcePath)
     {
         try {
-            $url = $this->client->getApiUri() . $resourcePath .
-                '?authentication.userId=' . $this->client->getConfig()->getUserId() .
-                '&authentication.password=' . $this->client->getConfig()->getPassword() .
-                '&authentication.entityId=' . $this->client->getConfig()->getEntityId();
+            $url = $this->getClient()->getApiUri() . $resourcePath .
+                '?authentication.userId=' . $this->getClient()->getConfig()->getUserId() .
+                '&authentication.password=' . $this->getClient()->getConfig()->getPassword() .
+                '&authentication.entityId=' . $this->getClient()->getConfig()->getEntityId();
 
-            $response = $this->client->getClient()->get($url);
+            $response = $this->getClient()->getClient()->get($url);
 
             return new ResponseJson((string)$response->getBody(), true);
         } catch (RequestException $e) {

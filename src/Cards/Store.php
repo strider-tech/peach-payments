@@ -133,7 +133,7 @@ class Store extends AbstractCard implements ClientInterface
             ]);
             $jsonResponse = $this->handle($response);
 
-            if ($jsonResponse) {
+            if ($jsonResponse->isSuccess()) {
                 $this->dbProcess($jsonResponse);
             }
 

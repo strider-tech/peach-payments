@@ -16,7 +16,7 @@ class CreatePaymentCardsTable extends Migration
         Schema::create('payment_cards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('user_id');
-            $table->string('payment_remote_id');
+            $table->string('payment_remote_id')->unique();
             $table->string('number')->nullable();
             $table->string('brand');
             $table->string('holder');

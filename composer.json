@@ -13,6 +13,10 @@
         "guzzlehttp/guzzle": "^6.3",
         "inacho/php-credit-card-validator": "^1.0"
     },
+    "require-dev": {
+        "orchestra/testbench": "^3.8@dev",
+        "mockery/mockery": "^1.0@dev"
+    },
     "license": "MIT",
     "authors": [
         {
@@ -28,7 +32,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "StriderTech\\PeachPayments\\Test\\": "tests/"
+            "StriderTech\\PeachPayments\\Tests\\": "tests/"
         }
     },
     "extra": {
