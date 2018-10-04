@@ -138,6 +138,10 @@ class PeachPayments
         $capture->fromPayment($payment);
         $captureResult = $capture->process();
 
+        $payment->setPaymentType($captureResult->getPaymentType())
+            ->setTransactionId($captureResult->getId());
+        $payment->save();
+
         return $captureResult;
     }
 

@@ -23,7 +23,7 @@ class Capture implements ClientInterface
     /**
      * @var string
      */
-    private $transactionId;
+    private $registrationId;
     /**
      * @var string
      */
@@ -36,16 +36,16 @@ class Capture implements ClientInterface
     /**
      * Capture constructor.
      * @param Client $captureClient
-     * @param string $transactionId
+     * @param string $registrationId
      * @param float $amount
      * @param string $currency
      */
-    public function __construct(Client $captureClient, $transactionId = null, $amount = null, $currency = null)
+    public function __construct(Client $captureClient, $registrationId = null, $amount = null, $currency = null)
     {
         $this->captureClient = $captureClient;
 
-        if (!empty($transactionId)) {
-            $this->setTransactionId($transactionId);
+        if (!empty($registrationId)) {
+            $this->setRegistrationId($registrationId);
         }
 
         if (!empty($amount)) {
@@ -81,7 +81,7 @@ class Capture implements ClientInterface
      */
     public function buildUrl()
     {
-        return $this->captureClient->getApiUri() . '/payments/' . $this->getTransactionId();
+        return $this->captureClient->getApiUri() . '/registrations/' . $this->getRegistrationId(). '/payments';
     }
 
     /**
@@ -93,7 +93,7 @@ class Capture implements ClientInterface
             'authentication.userId' => $this->captureClient->getConfig()->getUserId(),
             'authentication.password' => $this->captureClient->getConfig()->getPassword(),
             'authentication.entityId' => $this->captureClient->getConfig()->getEntityId(),
-            'paymentType' => PaymentType::CAPTURE,
+            'paymentType' => PaymentType::DEBIT,
             'amount' => $this->getAmount(),
             'currency' => $this->getCurrency(),
         ];
@@ -102,20 +102,21 @@ class Capture implements ClientInterface
     /**
      * @return string
      */
-    public function getTransactionId()
+    public function getRegistrationId()
     {
-        return $this->transactionId;
+        return $this->registrationId;
     }
 
     /**
-     * @param $transactionId
+     * @param $registrationId
      * @return $this
      */
-    public function setTransactionId($transactionId)
+    public function setRegistrationId($registrationId)
     {
-        $this->transactionId = $transactionId;
+        $this->registrationId = $registrationId;
         return $this;
     }
+
     /**
      * @return string
      */
@@ -172,7 +173,7 @@ class Capture implements ClientInterface
      */
     public function fromPayment(Payment $payment)
     {
-        $this->setTransactionId($payment->getPaymentRemoteId())
+        $this->setRegistrationId($payment->getPaymentRemoteId())
             ->setAmount($payment->getAmount())
             ->setCurrency($payment->getCurrency())
         ;

@@ -128,13 +128,33 @@ class Payment extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getTransactionId()
+    {
+        return $this->transaction_id;
+    }
+
+    /**
+     * @param $transactionId
+     * @return $this
+     */
+    public function setTransactionId($transactionId)
+    {
+        $this->transaction_id = $transactionId;
+        return $this;
+    }
+
+    /**
      * @param PaymentCard $paymentCard
      * @return $this
      */
     public function fromPaymentCard(PaymentCard $paymentCard)
     {
         $this->setUserId($paymentCard->getUserId())
-            ->setPaymentRemoteId($paymentCard->getPaymentRemoteId());
+            ->setPaymentRemoteId($paymentCard->getPaymentRemoteId())
+            ->paymentCard()->associate($paymentCard)
+        ;
 
         return $this;
     }

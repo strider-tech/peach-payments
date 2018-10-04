@@ -17,7 +17,8 @@ class CreatePaymentsTable extends Migration
             $table->increments('id');
             $table->string('user_id')->nullable();
             $table->string('payment_card_id');
-            $table->string('payment_remote_id');
+            $table->string('payment_remote_id')->nullable();
+            $table->string('transaction_id');
             $table->string('payment_type')->nullable();
             $table->float('amount');
             $table->string('currency');
