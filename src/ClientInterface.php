@@ -9,14 +9,7 @@ namespace StriderTech\PeachPayments;
 interface ClientInterface
 {
     /**
-     * Make process with database by API response
-     *
-     * @param $response
-     */
-    public function dbProcess($response);
-
-    /**
-     * Make request to PP API and run dbProcess()
+     * Make request to PP API
      *
      * @return array
      */

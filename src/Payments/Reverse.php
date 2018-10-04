@@ -5,6 +5,7 @@ namespace StriderTech\PeachPayments\Payments;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
+use StriderTech\PeachPayments\Enums\PaymentType;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
@@ -95,13 +96,13 @@ class Reverse implements ClientInterface
         ];
 
         if (!empty($this->getRefundAmount())) {
-            $params['paymentType'] = 'RF';
+            $params['paymentType'] = PaymentType::REFUND;
             $params['amount'] = $this->getRefundAmount();
             $params['currency'] = $this->getRefundCurrency();
         }
 
         if (empty($this->getRefundAmount())) {
-            $params['paymentType'] = 'RV';
+            $params['paymentType'] = PaymentType::REVERSAL;
         }
 
         return $params;
@@ -159,11 +160,6 @@ class Reverse implements ClientInterface
     {
         $this->transactionId = $transactionId;
         return $this;
-    }
-
-    public function dbProcess($response)
-    {
-        // TODO: Implement dbProcess() method.
     }
 
     /**

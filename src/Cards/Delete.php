@@ -84,13 +84,9 @@ class Delete implements ClientInterface
             $response = $client->delete($this->buildUrl());
             $jsonResponse = $this->handle($response);
 
-            if ($jsonResponse->isSuccess()) {
-                $this->dbProcess($jsonResponse);
-            }
-
             return $jsonResponse;
         } catch (RequestException $e) {
-            return new ResponseJson((string)$e->getResponse()->getBody(), false);
+            throw new \Exception((string)$e->getResponse()->getBody());
         }
     }
 
@@ -137,16 +133,5 @@ class Delete implements ClientInterface
         $jsonResponse = new ResponseJson($body, true);
 
         return $jsonResponse;
-    }
-
-    /**
-     * Make process with database by API response
-     *
-     * @param ResponseJson $response
-     */
-    public function dbProcess($response)
-    {
-        $card = PaymentCard::where('remote_id', $this->getTransactionId())->first();
-        $card->delete();
     }
 }

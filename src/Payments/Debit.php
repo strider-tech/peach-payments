@@ -6,6 +6,8 @@ use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Cards\AbstractCard;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
+use StriderTech\PeachPayments\Enums\PaymentType;
+use StriderTech\PeachPayments\Enums\RecurringType;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
@@ -21,7 +23,7 @@ class Debit extends AbstractCard implements ClientInterface
     private $client;
     private $amount;
     private $currency = 'ZAR';
-    private $paymentType = 'DB';
+    private $paymentType;
     private $createRegistration = false;
 
     /**
@@ -31,6 +33,7 @@ class Debit extends AbstractCard implements ClientInterface
     public function __construct(Client $appClient)
     {
         $this->client = $appClient;
+        $this->paymentType = PaymentType::DEBIT;
     }
 
     /**
@@ -87,7 +90,7 @@ class Debit extends AbstractCard implements ClientInterface
         // save card and make sure the transaction is done correctly via the INITIAL trigger
         if ($this->isCreateRegistration()) {
             $params['createRegistration'] = true;
-            $params['recurringType'] = 'INITIAL';
+            $params['recurringType'] = RecurringType::INITIAL;
         }
 
         return $params;
@@ -118,7 +121,7 @@ class Debit extends AbstractCard implements ClientInterface
     public function setAuthOnly($authOnly)
     {
         if ($authOnly === true) {
-            $this->setPaymentType('PA');
+            $this->setPaymentType(PaymentType::PREAUTHORISATION);
         }
         return $this;
     }
@@ -176,11 +179,6 @@ class Debit extends AbstractCard implements ClientInterface
     {
         $this->createRegistration = $createRegistration;
         return $this;
-    }
-
-    public function dbProcess($response)
-    {
-        // TODO: Implement dbProcess() method.
     }
 
     /**

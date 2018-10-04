@@ -5,6 +5,8 @@ namespace StriderTech\PeachPayments\Payments;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
+use StriderTech\PeachPayments\Enums\PaymentType;
+use StriderTech\PeachPayments\Payment;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
@@ -41,6 +43,7 @@ class Capture implements ClientInterface
     public function __construct(Client $captureClient, $transactionId = null, $amount = null, $currency = null)
     {
         $this->captureClient = $captureClient;
+
         if (!empty($transactionId)) {
             $this->setTransactionId($transactionId);
         }
@@ -56,6 +59,7 @@ class Capture implements ClientInterface
 
     /**
      * @return ResponseJson
+     * @throws \Exception
      */
     public function process()
     {
@@ -64,9 +68,11 @@ class Capture implements ClientInterface
             $response = $captureClient->post($this->buildUrl(), [
                 'form_params' => $this->getCaptureParams()
             ]);
-            return new ResponseJson((string)$response->getBody(), true);
+            $jsonResponse = $this->handle($response);
+
+            return $jsonResponse;
         } catch (RequestException $e) {
-            return new ResponseJson((string)$e->getResponse()->getBody(), false);
+            throw new \Exception((string)$e->getResponse()->getBody());
         }
     }
 
@@ -87,7 +93,7 @@ class Capture implements ClientInterface
             'authentication.userId' => $this->captureClient->getConfig()->getUserId(),
             'authentication.password' => $this->captureClient->getConfig()->getPassword(),
             'authentication.entityId' => $this->captureClient->getConfig()->getEntityId(),
-            'paymentType' => 'CP',
+            'paymentType' => PaymentType::CAPTURE,
             'amount' => $this->getAmount(),
             'currency' => $this->getCurrency(),
         ];
@@ -146,19 +152,31 @@ class Capture implements ClientInterface
         return $this;
     }
 
-    public function dbProcess($response)
-    {
-        // TODO: Implement dbProcess() method.
-    }
-
     /**
      * Handle response from PP API
      *
      * @param $response
-     * @return string
+     * @return ResponseJson
      */
     public function handle($response)
     {
-        // TODO: Implement handle() method.
+        $body = (string)$response->getBody();
+        $jsonResponse = new ResponseJson($body, true);
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @param Payment $payment
+     * @return $this
+     */
+    public function fromPayment(Payment $payment)
+    {
+        $this->setTransactionId($payment->getPaymentRemoteId())
+            ->setAmount($payment->getAmount())
+            ->setCurrency($payment->getCurrency())
+        ;
+
+        return $this;
     }
 }

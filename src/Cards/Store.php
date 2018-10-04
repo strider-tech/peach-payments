@@ -22,8 +22,6 @@ class Store extends AbstractCard implements ClientInterface
      * @var Client
      */
     private $client;
-    private $type;
-    private $isPrimary;
     private $userId;
     private $paymentRemoteId;
     private $lastFour;
@@ -35,25 +33,6 @@ class Store extends AbstractCard implements ClientInterface
     public function __construct(Client $client)
     {
         $this->client = $client;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param mixed $type
-     * @return $this
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     /**
@@ -116,6 +95,7 @@ class Store extends AbstractCard implements ClientInterface
     /**
      * Process store card procedure.
      * @return ResponseJson|string
+     * @throws \Exception
      */
     public function process()
     {
@@ -133,13 +113,9 @@ class Store extends AbstractCard implements ClientInterface
             ]);
             $jsonResponse = $this->handle($response);
 
-            if ($jsonResponse->isSuccess()) {
-                $this->dbProcess($jsonResponse);
-            }
-
             return $jsonResponse;
         } catch (RequestException $e) {
-            return new ResponseJson((string)$e->getResponse()->getBody(), false);
+            throw new \Exception((string)$e->getResponse()->getBody());
         }
     }
 
@@ -154,7 +130,6 @@ class Store extends AbstractCard implements ClientInterface
 
         $this->setLastFour($jsonResponse->getCardLast4Digits())
             ->setPaymentRemoteId($jsonResponse->getId())
-//            ->setType($jsonResponse->getPaymentType())
         ;
 
         return $jsonResponse;
@@ -166,17 +141,6 @@ class Store extends AbstractCard implements ClientInterface
     public function buildUrl()
     {
         return $this->client->getApiUri() . '/registrations';
-    }
-
-    /**
-     * @param ResponseJson $response
-     * @return string
-     */
-    public function dbProcess($response)
-    {
-        $card = new PaymentCard();
-        $card->fromStore($this);
-        $card->save();
     }
 
     /**
@@ -207,18 +171,20 @@ class Store extends AbstractCard implements ClientInterface
     }
 
     /**
-     * @return mixed
+     * @param PaymentCard $paymentCard
+     * @return ResponseJson|string
      */
-    public function getIsPrimary()
+    public function fromPaymentCard(PaymentCard $paymentCard)
     {
-        return $this->isPrimary;
-    }
+        $this->setCardBrand($paymentCard->getCardBrand())
+            ->setCardNumber($paymentCard->getCardNumber())
+            ->setCardHolder($paymentCard->getCardHolder())
+            ->setCardExpiryMonth($paymentCard->getCardExpiryMonth())
+            ->setCardExpiryYear($paymentCard->getCardExpiryYear())
+            ->setCardCvv($paymentCard->getCardCvv())
+            ->setUserId($paymentCard->getUserId())
+        ;
 
-    /**
-     * @param mixed $isPrimary
-     */
-    public function setIsPrimary($isPrimary)
-    {
-        $this->isPrimary = $isPrimary;
+        return $this;
     }
 }

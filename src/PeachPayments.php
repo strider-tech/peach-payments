@@ -5,6 +5,7 @@ namespace StriderTech\PeachPayments;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Cards\Delete;
 use StriderTech\PeachPayments\Cards\Store;
+use StriderTech\PeachPayments\Payments\Capture;
 use StriderTech\PeachPayments\Payments\Status;
 
 class PeachPayments
@@ -50,12 +51,18 @@ class PeachPayments
     }
 
     /**
-     * @param Store $store
+     * @param PaymentCard $paymentCard
      * @return ResponseJson|string
      */
-    public function storeCard(Store $store)
+    public function storeCard(PaymentCard $paymentCard)
     {
+        $store = new Store($this->getClient());
+        $store->fromPaymentCard($paymentCard);
         $result = $store->process();
+
+        $card = new PaymentCard();
+        $card->fromStore($store);
+        $card->save();
 
         return $result;
     }
@@ -95,6 +102,15 @@ class PeachPayments
     }
 
     /**
+     * @param $userId
+     * @return mixed|ResponseJson
+     */
+    public function getCardsByUserId($userId)
+    {
+        return PaymentCard::where('user_id', $userId)->get();
+    }
+
+    /**
      * @param $token
      * @return mixed|ResponseJson
      */
@@ -113,6 +129,19 @@ class PeachPayments
     }
 
     /**
+     * @param Payment $payment
+     * @return ResponseJson
+     */
+    public function pay(Payment $payment)
+    {
+        $capture = new Capture($this->getClient());
+        $capture->fromPayment($payment);
+        $captureResult = $capture->process();
+
+        return $captureResult;
+    }
+
+    /**
      * @param PaymentCard $paymentCard
      * @return ResponseJson|string
      */
@@ -122,26 +151,10 @@ class PeachPayments
         $cardDelete->setPaymentCard($paymentCard);
         $result = $cardDelete->process();
 
+        $card = PaymentCard::where('payment_remote_id', $cardDelete->getTransactionId())->first();
+        $card->delete();
+
         return $result;
-    }
-
-    /**
-     * @param PaymentCard $paymentCard
-     * @return ResponseJson|string
-     */
-    public function fromPaymentCard(PaymentCard $paymentCard)
-    {
-        $storeCard = new Store($this->getClient());
-
-        $storeCardResult = $storeCard->setCardBrand($paymentCard->getCardBrand())
-            ->setCardNumber($paymentCard->getCardNumber())
-            ->setCardHolder($paymentCard->getCardHolder())
-            ->setCardExpiryMonth($paymentCard->getCardExpiryMonth())
-            ->setCardExpiryYear($paymentCard->getCardExpiryYear())
-            ->setCardCvv($paymentCard->getCardCvv())
-            ->process();
-
-        return $storeCardResult;
     }
 
     /**

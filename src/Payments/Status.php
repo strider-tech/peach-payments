@@ -55,14 +55,9 @@ class Status implements ClientInterface
             $response = $client->get($this->buildUrl());
             $jsonResponse = $this->handle($response);
 
-            if ($jsonResponse->isSuccess()) {
-                $this->dbProcess($jsonResponse);
-            }
-
             return $jsonResponse;
         } catch (RequestException $e) {
             throw new \Exception((string)$e->getResponse()->getBody());
-//            return new ResponseJson((string)$e->getResponse()->getBody(), false);
         }
     }
 
@@ -93,15 +88,6 @@ class Status implements ClientInterface
     {
         $this->transactionId = $transactionId;
         return $this;
-    }
-
-    /**
-     * @param $response
-     * @return bool
-     */
-    public function dbProcess($response)
-    {
-        return true;
     }
 
     /**
