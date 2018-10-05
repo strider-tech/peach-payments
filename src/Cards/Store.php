@@ -14,8 +14,6 @@ use StriderTech\PeachPayments\ResponseJson;
  */
 class Store extends AbstractCard implements ClientInterface
 {
-    public $model;
-
     /**
      * Oppwa client object.
      *

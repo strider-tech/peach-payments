@@ -12,8 +12,6 @@ use StriderTech\PeachPayments\Enums\CardException;
  */
 abstract class AbstractCard
 {
-    public $model;
-
     private $cardBrand;
     private $cardNumber;
     private $cardHolder;
