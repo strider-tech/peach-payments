@@ -1,7 +1,7 @@
 {
     "name": "strider-tech/peach-payments",
     "description": "Peach Payments integration for Laravel",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "keywords": [
         "peach payments",
         "peach payments api",
@@ -39,7 +39,10 @@
         "laravel": {
             "providers": [
                 "StriderTech\\PeachPayments\\PeachPaymentsServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "PeachPayments": "StriderTech\\PeachPayments\\Facade\\PeachPaymentsFacade"
+            }
         }
     }
 }

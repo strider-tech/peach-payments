@@ -2,6 +2,8 @@
 
 namespace StriderTech\PeachPayments;
 
+use StriderTech\PeachPayments\Enums\CardException;
+
 /**
  * Class Client
  * @package StriderTech\PeachPayments
@@ -15,9 +17,6 @@ class Client
     const API_URI_TEST = 'https://test.oppwa.com/';
     const API_URI_LIVE = 'https://oppwa.com/';
     const API_URI_VERSION = 'v1';
-
-    // exceptions
-    const EXCEPTION_BAD_CONFIG = 100;
 
     /**
      * Configuration object.
@@ -68,7 +67,7 @@ class Client
 
         // can not find the configuration
         if (!isset($this->config)) {
-            throw new \Exception("Please configure the client correctly", self::EXCEPTION_BAD_CONFIG);
+            throw new \Exception("Please configure the client correctly", CardException::EXCEPTION_BAD_CONFIG);
         }
 
         // Setup client;

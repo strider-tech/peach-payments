@@ -11,7 +11,7 @@ use StriderTech\PeachPayments\Enums\RecurringType;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
- * todo
+ * todo implement recurring payments
  * Class Debit
  * @package StriderTech\PeachPayments\Payments
  */

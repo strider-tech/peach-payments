@@ -2,7 +2,6 @@
 
 namespace StriderTech\PeachPayments\Tests;
 
-use Carbon\Carbon;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\Enums\CardBrand;
 use StriderTech\PeachPayments\Payment;
@@ -10,42 +9,6 @@ use StriderTech\PeachPayments\PaymentCard;
 
 class PeachPaymentsTest extends TestCase
 {
-    /**
-     * Load laravel and package migrations
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->loadLaravelMigrations();
-        $this->artisan('migrate', ['--database' => 'test'])->run();
-    }
-
-    /**
-     * Rollback migrations
-     */
-    protected function tearDown()
-    {
-        $this->artisan('migrate:rollback', ['--database' => 'test'])->run();
-
-        parent::tearDown();
-    }
-
-    /**
-     * Create test user
-     */
-    private function createUser()
-    {
-        $now = Carbon::now();
-        \DB::table('users')->insert([
-            'name' => 'User',
-            'email' => 'user@example.com',
-            'password' => \Hash::make('123'),
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-    }
-
     /**
      * Getting facade access
      * @return void
@@ -60,12 +23,10 @@ class PeachPaymentsTest extends TestCase
     }
 
     /**
-     * Generate user in db
+     * Test database data
      */
     public function testDb()
     {
-        $this->createUser();
-
         $this->assertDatabaseHas('users', [
             'id' => 1,
             'email' => 'user@example.com'

@@ -10,7 +10,6 @@ use StriderTech\PeachPayments\PaymentCard;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
- * todo
  * Class Delete
  * @package StriderTech\PeachPayments\Cards
  */

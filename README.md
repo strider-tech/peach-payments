@@ -2,7 +2,9 @@
 
 ## Installation
 
-Register package service provider and facade in 'config/app.php':
+In Laravel versions >= 5.5 the service provider and facade will automatically be registered and enabled. 
+
+In older versions of the framework just add the package service provider and facade in 'config/app.php' file:
 ```php
 'providers' => [
     ...
@@ -17,10 +19,12 @@ Register package service provider and facade in 'config/app.php':
 
 Add package migrations and vendors with commands:
 ```
-php artisan migrate
-php artisan vendor:publish
+php artisan vendor:publish --provider="StriderTech\PeachPayments\PeachPaymentsServiceProvider"
 ```
-After publishing of vendors edit config file: `app/config/peachpayments.php`
+After publishing of vendors edit config file: `app/config/peachpayments.php` and run migrations: 
+```
+php artisan migrate
+```
 
 ## Examples
 

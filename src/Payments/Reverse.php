@@ -9,7 +9,7 @@ use StriderTech\PeachPayments\Enums\PaymentType;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
- * todo
+ * todo implement recurring payments
  * Class Reverse
  * @package StriderTech\PeachPayments\Payments
  */

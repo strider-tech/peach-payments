@@ -5,17 +5,28 @@ namespace StriderTech\PeachPayments\Tests;
 use Illuminate\Support\Facades\Schema;
 use StriderTech\PeachPayments\Facade\PeachPaymentsFacade;
 use StriderTech\PeachPayments\PeachPaymentsServiceProvider;
+use Carbon\Carbon;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     /**
-     * Add database changes for old versions of mysql
+     * Add database changes
      */
     protected function setUp()
     {
         parent::setUp();
 
         Schema::defaultStringLength(191);
+
+        include_once __DIR__ . '/../src/migrations/create_payment_cards_table.php';
+        include_once __DIR__ . '/../src/migrations/create_payments_table.php';
+
+        $this->loadLaravelMigrations();
+
+        (new \CreatePaymentCardsTable())->up();
+        (new \CreatePaymentsTable())->up();
+
+        $this->createUser();
     }
 
     /**
@@ -60,4 +71,20 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return ['PeachPayments' => PeachPaymentsFacade::class];
     }
+
+    /**
+     * Create test user
+     */
+    private function createUser()
+    {
+        $now = Carbon::now();
+        \DB::table('users')->insert([
+            'name' => 'User',
+            'email' => 'user@example.com',
+            'password' => \Hash::make('123'),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+    }
+
 }
