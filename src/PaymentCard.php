@@ -230,6 +230,7 @@ class PaymentCard extends Model
 
     /**
      * @param mixed $type
+     * @return $this
      */
     public function setType($type)
     {
@@ -253,8 +254,6 @@ class PaymentCard extends Model
             ->setLastFour($store->getLastFour())
             ->setUserId($store->getUserId())
             ->setPaymentRemoteId($store->getPaymentRemoteId())
-//            ->setType($store->getType())
-//            ->setIsPrimary($store->getIsPrimary())
         ;
 
         return $this;

@@ -5,6 +5,7 @@ namespace StriderTech\PeachPayments\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
+// todo implement all webhooks when use server-to-server flow
 class WebhookController extends Controller
 {
     /**
@@ -13,7 +14,6 @@ class WebhookController extends Controller
      */
     public function index(Request $request)
     {
-        // todo modifications with transaction id $id
         $id = $request->input('id');
         $resourcePath = $request->input('resourcePath');
 

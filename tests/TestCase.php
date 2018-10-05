@@ -48,7 +48,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'user_id' => '8a8294174e735d0c014e78cf266b1794',
             'password' => 'qyyfHCN83e',
             'entity_id' => '8a8294174e735d0c014e78cf26461790',
-            'test_mode' => true
+            'test_mode' => true,
+            'api_uri_test' => 'https://test.oppwa.com/',
+            'api_uri_live' => 'https://oppwa.com/',
+            'api_uri_version' => 'v1',
         ]);
     }
 

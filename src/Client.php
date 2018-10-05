@@ -10,14 +10,6 @@ use StriderTech\PeachPayments\Enums\CardException;
  */
 class Client
 {
-    // client version
-    const CLIENT_VERSION = '1.0.0';
-
-    // api location and version
-    const API_URI_TEST = 'https://test.oppwa.com/';
-    const API_URI_LIVE = 'https://oppwa.com/';
-    const API_URI_VERSION = 'v1';
-
     /**
      * Configuration object.
      *
@@ -136,8 +128,8 @@ class Client
     public function getApiUri()
     {
         if ($this->isTestMode()) {
-            return self::API_URI_TEST . self::API_URI_VERSION;
+            return config('peachpayments.api_uri_test') . config('peachpayments.api_uri_version');
         }
-        return self::API_URI_LIVE . self::API_URI_VERSION;
+        return config('peachpayments.api_uri_live') . config('peachpayments.api_uri_version');
     }
 }
