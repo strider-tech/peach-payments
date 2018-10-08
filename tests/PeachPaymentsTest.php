@@ -54,9 +54,8 @@ class PeachPaymentsTest extends TestCase
             ->setCardHolder('Jane Jones')
             ->setCardExpiryMonth('05')
             ->setCardExpiryYear('2020')
-            ->setCardCvv('123')
-            ->setUserId(1);
-        $result = \PeachPayments::storeCard($card);
+            ->setCardCvv('123');
+        $result = $this->user->storeCard($card);
 
         $this->assertDatabaseHas('payment_cards', [
             'id' => 1,
@@ -64,7 +63,7 @@ class PeachPaymentsTest extends TestCase
         ]);
 
         $paymentCard = PaymentCard::find(1);
-        $status = \PeachPayments::getPaymentStatusByToken($paymentCard->getPaymentRemoteId());
+        $status = $this->user->getPaymentStatusByToken($paymentCard->getPaymentRemoteId());
         $this->assertObjectHasAttribute('json', $status);
         $this->assertTrue($status->isSuccess());
 
@@ -72,7 +71,7 @@ class PeachPaymentsTest extends TestCase
         $payment->fromPaymentCard($paymentCard);
         $payment->setCurrency('ZAR')
             ->setAmount('50.90');
-        $paymentStatus = \PeachPayments::pay($payment);
+        $paymentStatus = $this->user->pay($payment);
         $this->assertObjectHasAttribute('json', $paymentStatus);
         $this->assertTrue($paymentStatus->isSuccess());
     }
@@ -88,9 +87,8 @@ class PeachPaymentsTest extends TestCase
             ->setCardHolder('Jane Jones')
             ->setCardExpiryMonth('05')
             ->setCardExpiryYear('2020')
-            ->setCardCvv('123')
-            ->setUserId(1);
-        $result = \PeachPayments::storeCard($card);
+            ->setCardCvv('123');
+        $result = $this->user->storeCard($card);
 
         $this->assertDatabaseHas('payment_cards', [
             'id' => 1,
@@ -98,7 +96,7 @@ class PeachPaymentsTest extends TestCase
         ]);
 
         $paymentCard = PaymentCard::find(1);
-        $status = \PeachPayments::deleteCard($paymentCard);
+        $status = $this->user->deleteCard($paymentCard);
         $this->assertObjectHasAttribute('json', $status);
         $this->assertTrue($status->isSuccess());
 

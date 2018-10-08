@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\Schema;
 use StriderTech\PeachPayments\Facade\PeachPaymentsFacade;
 use StriderTech\PeachPayments\PeachPaymentsServiceProvider;
 use Carbon\Carbon;
+use StriderTech\PeachPayments\Tests\Fixtures\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    public $user;
+
     /**
      * Add database changes
      */
@@ -81,7 +84,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     private function createUser()
     {
         $now = Carbon::now();
-        \DB::table('users')->insert([
+        $this->user = User::create([
             'name' => 'User',
             'email' => 'user@example.com',
             'password' => \Hash::make('123'),
