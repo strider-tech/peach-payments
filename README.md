@@ -26,32 +26,44 @@ After publishing of vendors edit config file: `app/config/peachpayments.php` and
 php artisan migrate
 ```
 
-## Examples
+Add the Billable trait to your model definition. This trait provides various methods to allow you to perform common tasks, such as registration cards, creating payments, applying coupons, and updating credit card information:
+
+```
+use StriderTech\PeachPayments\Billable;
+
+class User extends Authenticatable
+{
+    use Billable;
+}
+```
+
+## Usage
 
 ### Register Card
 
 ```
+$user = Auth::user();
+
 $card = new PaymentCard();
 $card->setCardBrand(CardBrand::MASTERCARD)
     ->setCardNumber('5454545454545454')
     ->setCardHolder('Jane Jones')
     ->setCardExpiryMonth('05')
     ->setCardExpiryYear('2020')
-    ->setCardCvv('123')
-    ->setUserId(Auth::user()->id);
+    ->setCardCvv('123');
     
-\PeachPayments::storeCard($card);
+$user->storeCard($card);
 ```
 
 ### Register Card by Token
 
 ```
-\PeachPayments::storeCardByToken($token, Auth::user()->id);
+$user->storeCardByToken($token);
 ```
 
 ### Get user cards
 ```
-$cards = PaymentCard::where('user_id', $userId)->get();
+$cards = $user->cards;
 ```
 
 ### Pay with card
@@ -62,20 +74,18 @@ $payment->fromPaymentCard($paymentCard);
 $payment->setCurrency('ZAR')
     ->setAmount('90.9');
     
-\PeachPayments::pay($payment);
+$user->pay($payment);
 ```
 
 ### Get user payments
 ```
-$cards = Payment::where('user_id', $userId)->get();
+$payments = $user->payments;
 ```
 
 ### Delete Card
 
 ```
-$paymentCard = PaymentCard::find($paymentCardId);
-
-\PeachPayments::deleteCard($paymentCard);
+$user->deleteCardByToken($token);
 ```
 
 [0]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square

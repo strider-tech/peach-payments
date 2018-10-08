@@ -252,7 +252,6 @@ class PaymentCard extends Model
             ->setCardExpiryYear($store->getCardExpiryYear())
             ->setCardCvv($store->getCardCvv())
             ->setLastFour($store->getLastFour())
-            ->setUserId($store->getUserId())
             ->setPaymentRemoteId($store->getPaymentRemoteId())
         ;
 

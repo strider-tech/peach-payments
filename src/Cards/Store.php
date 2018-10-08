@@ -20,7 +20,6 @@ class Store extends AbstractCard implements ClientInterface
      * @var Client
      */
     private $client;
-    private $userId;
     private $paymentRemoteId;
     private $lastFour;
 
@@ -67,25 +66,6 @@ class Store extends AbstractCard implements ClientInterface
     public function setPaymentRemoteId($paymentRemoteId)
     {
         $this->paymentRemoteId = $paymentRemoteId;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * @param mixed $userId
-     * @return $this
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
 
         return $this;
     }
@@ -180,7 +160,6 @@ class Store extends AbstractCard implements ClientInterface
             ->setCardExpiryMonth($paymentCard->getCardExpiryMonth())
             ->setCardExpiryYear($paymentCard->getCardExpiryYear())
             ->setCardCvv($paymentCard->getCardCvv())
-            ->setUserId($paymentCard->getUserId())
         ;
 
         return $this;

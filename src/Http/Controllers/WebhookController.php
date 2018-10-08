@@ -16,9 +16,7 @@ class WebhookController extends Controller
     {
         $id = $request->input('id');
         $resourcePath = $request->input('resourcePath');
-
-        $paymentService = app()->get('peachpayments');
-        $notificationResponse = $paymentService->getNotificationStatus($resourcePath);
+        $notificationResponse = \PeachPayments::getNotificationStatus($resourcePath);
 
         return new JsonResponse($notificationResponse);
     }
