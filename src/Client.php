@@ -2,7 +2,7 @@
 
 namespace StriderTech\PeachPayments;
 
-use StriderTech\PeachPayments\Enums\CardException;
+use StriderTech\PeachPayments\Enums\Exception;
 
 /**
  * Class Client
@@ -59,7 +59,7 @@ class Client
 
         // can not find the configuration
         if (!isset($this->config)) {
-            throw new \Exception("Please configure the client correctly", CardException::EXCEPTION_BAD_CONFIG);
+            throw new \Exception("Please configure the client correctly", Exception::BAD_CONFIG);
         }
 
         // Setup client;

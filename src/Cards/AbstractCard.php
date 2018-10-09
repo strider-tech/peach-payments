@@ -4,7 +4,7 @@ namespace StriderTech\PeachPayments\Cards;
 
 use Inacho\CreditCard;
 use StriderTech\PeachPayments\Enums\CardBrand;
-use StriderTech\PeachPayments\Enums\CardException;
+use StriderTech\PeachPayments\Enums\Exception;
 
 /**
  * Class AbstractCard
@@ -31,20 +31,20 @@ abstract class AbstractCard
         // check for any empty variables
         foreach ($cardVariables as $cardVariable) {
             if (empty($this->$cardVariable)) {
-                throw new \Exception(sprintf("Card variable empty %s", $cardVariable), CardException::VAR_EMPTY);
+                throw new \Exception(sprintf("Card variable empty %s", $cardVariable), Exception::VAR_EMPTY);
             }
         }
         // validate card
         if (!$this->validateCard()) {
-            throw new \Exception("Card not valid", CardException::INVALID);
+            throw new \Exception("Card not valid", Exception::INVALID);
         }
         // validate cvv
         if (!$this->validateCardCvv()) {
-            throw new \Exception("Card CVV not valid", CardException::CVV_INVALID);
+            throw new \Exception("Card CVV not valid", Exception::CVV_INVALID);
         }
         // validate card date
         if (!$this->validateCardDate()) {
-            throw new \Exception("Card date not valid", CardException::CVV_INVALID);
+            throw new \Exception("Card date not valid", Exception::CVV_INVALID);
         }
     }
 
