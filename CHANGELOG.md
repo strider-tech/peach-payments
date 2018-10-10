@@ -2,6 +2,7 @@
 
 ## 0.1.1 (2018-10-10)
 - Fix user relation in payment models
+- Fix exception names
 - Fix tests with new relations
 
 ## 0.1.0 (2018-10-08)
