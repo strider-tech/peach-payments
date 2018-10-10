@@ -42,6 +42,19 @@ class PaymentCard extends Model
         'is_primary' => 'boolean'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(config('peachpayments.model'));
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, $this->getForeignKey())->orderBy('created_at', 'desc');
+    }
+
     /**
      * @return string
      */
@@ -57,24 +70,6 @@ class PaymentCard extends Model
     public function setCardBrand($cardBrand)
     {
         $this->brand = $cardBrand;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserId()
-    {
-        return $this->user_id;
-    }
-
-    /**
-     * @param mixed $userId
-     * @return $this
-     */
-    public function setUserId($userId)
-    {
-        $this->user_id = $userId;
         return $this;
     }
 
@@ -273,60 +268,5 @@ class PaymentCard extends Model
         ;
 
         return $this;
-    }
-
-    /**
-     * @param $userId
-     * @param $type
-     */
-    public static function removePrimaryFlagFromCurrentCards($userId, $type)
-    {
-        self::where('user_id', $userId)
-            ->where('type', $type)
-            ->update(['is_primary' => false]);
-    }
-
-    /**
-     * @param $userId
-     */
-    public function reassignPrimaryFlagToAnotherCard($userId)
-    {
-        $card = self::where('user_id', $userId)
-            ->where('type', $this->type)
-            ->where('id', '!=', $this->id)
-            ->orderBy('is_primary', 'desc')
-            ->first();
-
-        if ($card) {
-            $card->update(['is_primary' => true]);
-        }
-    }
-
-    /**
-     * @param $isPrimary
-     * @param null $type
-     */
-    public function updatePrimaryFlag($isPrimary, $type = null)
-    {
-        if ($isPrimary) {
-            self::removePrimaryFlagFromCurrentCards($type ?: $this->type);
-        }
-        $this->is_primary = $isPrimary;
-    }
-
-    /**
-     * @param null $type
-     */
-    public function updateType($type = null)
-    {
-        if ($type && $type !== $this->type) {
-            if ($this->is_primary) {
-                self::removePrimaryFlagFromCurrentCards($type);
-            }
-
-            $this->reassignPrimaryFlagToAnotherCard();
-
-            $this->type = $type;
-        }
     }
 }
