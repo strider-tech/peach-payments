@@ -5,7 +5,7 @@ namespace StriderTech\PeachPayments\Cards;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
-use StriderTech\PeachPayments\Enums\CardException;
+use StriderTech\PeachPayments\Enums\Exception;
 use StriderTech\PeachPayments\PaymentCard;
 use StriderTech\PeachPayments\ResponseJson;
 
@@ -74,7 +74,7 @@ class Delete implements ClientInterface
     public function process()
     {
         if (empty($this->transactionId)) {
-            throw new \Exception("Transaction Id can not be empty", CardException::EXCEPTION_EMPTY_TID);
+            throw new \Exception("Transaction Id can not be empty", Exception::EMPTY_TID);
         }
 
         $client = $this->client->getClient();

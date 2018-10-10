@@ -29,22 +29,9 @@ class Payment extends Model
         'deleted_at',
     ];
 
-    /**
-     * @return mixed
-     */
-    public function getUserId()
+    public function user()
     {
-        return $this->user_id;
-    }
-
-    /**
-     * @param mixed $userId
-     * @return $this
-     */
-    public function setUserId($userId)
-    {
-        $this->user_id = $userId;
-        return $this;
+        return $this->belongsTo(config('peachpayments.model'));
     }
 
     /**
@@ -151,10 +138,9 @@ class Payment extends Model
      */
     public function fromPaymentCard(PaymentCard $paymentCard)
     {
-        $this->setUserId($paymentCard->getUserId())
-            ->setPaymentRemoteId($paymentCard->getPaymentRemoteId())
-            ->paymentCard()->associate($paymentCard)
-        ;
+        $this->setPaymentRemoteId($paymentCard->getPaymentRemoteId())
+            ->paymentCard()->associate($paymentCard);
+        $this->user()->associate($paymentCard->user);
 
         return $this;
     }

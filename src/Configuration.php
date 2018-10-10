@@ -2,14 +2,14 @@
 
 namespace StriderTech\PeachPayments;
 
+use StriderTech\PeachPayments\Enums\Exception;
+
 /**
  * Class Configuration
  * @package StriderTech\PeachPayments
  */
 class Configuration
 {
-    const EXCEPTION_ARGUMENT_EMPTY = 201;
-
     /**
      * User id.
      *
@@ -45,10 +45,10 @@ class Configuration
         $this->entityId = $entityId;
         // check if anything is null or empty
         if (empty($userId) || empty($password) || empty($entityId)) {
-           throw new \Exception("Argument missing in configuration", self::EXCEPTION_ARGUMENT_EMPTY);
+            throw new \Exception("Argument missing in configuration", Exception::ARGUMENT_EMPTY);
         }
     }
-    
+
     /**
      * @return string
      */

@@ -5,7 +5,7 @@ namespace StriderTech\PeachPayments\Payments;
 use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
-use StriderTech\PeachPayments\Enums\CardException;
+use StriderTech\PeachPayments\Enums\Exception;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
@@ -45,7 +45,7 @@ class Notification implements ClientInterface
     public function process()
     {
         if (empty($this->getResourcePath())) {
-            throw new \Exception("Resource path can not be empty", CardException::EXCEPTION_EMPTY_STATUS_TID);
+            throw new \Exception("Resource path can not be empty", Exception::EMPTY_STATUS_TID);
         }
 
         $client = $this->client->getClient();

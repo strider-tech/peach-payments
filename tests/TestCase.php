@@ -48,6 +48,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ]);
 
         $app['config']->set('peachpayments', [
+            'model' => Fixtures\User::class,
             'user_id' => '8a8294174e735d0c014e78cf266b1794',
             'password' => 'qyyfHCN83e',
             'entity_id' => '8a8294174e735d0c014e78cf26461790',
