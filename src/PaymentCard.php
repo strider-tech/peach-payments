@@ -27,19 +27,9 @@ class PaymentCard extends Model
         'last_four',
         'expiry_month',
         'expiry_year',
-        'cvv',
-        'type',
-        'is_primary',
         'created_at',
         'updated_at',
         'deleted_at',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $casts = [
-        'is_primary' => 'boolean'
     ];
 
     public function user()
