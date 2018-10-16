@@ -35,26 +35,26 @@ trait Billable
         $store->fromPaymentCard($paymentCard);
         $result = $store->process();
 
-        $card = new PaymentCard();
-        $card->fromStore($store);
-        $this->cards()->save($card);
+        $paymentCard->fromStore($store);
+        $this->cards()->save($paymentCard);
 
         return $result;
     }
 
     /**
      * @param string $token
+     * @param PaymentCard|null $paymentCard
      * @return ResponseJson|string
      */
-    public function storeCardByToken($token)
+    public function storeCardByToken($token, PaymentCard $paymentCard = null)
     {
         $paymentStatus = new Status(\PeachPayments::getClient());
         $paymentStatus->setTransactionId($token);
         $paymentStatusResult = $paymentStatus->process();
 
-        $card = new PaymentCard();
-        $card->fromAPIResponse($paymentStatusResult);
-        $this->cards()->save($card);
+        $paymentCard = $paymentCard ?: new PaymentCard();
+        $paymentCard->fromAPIResponse($paymentStatusResult);
+        $this->cards()->save($paymentCard);
 
         return $paymentStatusResult;
     }

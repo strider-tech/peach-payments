@@ -158,11 +158,16 @@ class Capture implements ClientInterface
      *
      * @param $response
      * @return ResponseJson
+     * @throws \Exception
      */
     public function handle($response)
     {
         $body = (string)$response->getBody();
         $jsonResponse = new ResponseJson($body, true);
+
+        if (!$jsonResponse->isSuccess()) {
+            throw new \Exception($jsonResponse->getResultMessage());
+        }
 
         return $jsonResponse;
     }

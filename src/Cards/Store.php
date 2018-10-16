@@ -100,6 +100,7 @@ class Store extends AbstractCard implements ClientInterface
     /**
      * @param $response
      * @return ResponseJson|string
+     * @throws \Exception
      */
     public function handle($response)
     {
@@ -109,6 +110,10 @@ class Store extends AbstractCard implements ClientInterface
         $this->setLastFour($jsonResponse->getCardLast4Digits())
             ->setPaymentRemoteId($jsonResponse->getId())
         ;
+
+        if (!$jsonResponse->isSuccess()) {
+            throw new \Exception($jsonResponse->getResultMessage());
+        }
 
         return $jsonResponse;
     }

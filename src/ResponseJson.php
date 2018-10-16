@@ -121,6 +121,15 @@ class ResponseJson
     {
         return $this->getPropertyIfExists('code', $this->getResult());
     }
+
+    /**
+     * @return string
+     */
+    public function getResultMessage()
+    {
+        return $this->getPropertyIfExists('message', $this->getResult());
+    }
+
     /**
      * @return string
      */

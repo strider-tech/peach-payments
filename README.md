@@ -1,4 +1,4 @@
-# Peach Payments Integration for Laravel [![stability][0]][1]
+# Peach Payments Integration for Laravel [![stability][0]][1][![release][2]][3]
 
 ## Installation
 
@@ -89,5 +89,9 @@ $user->deleteCardByToken($token);
 ```
 
 [0]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
+[01]: https://img.shields.io/badge/stability-stable-green.svg?style=flat-square
 [1]: https://nodejs.org/api/documentation.html#documentation_stability_index
-[2]: https://img.shields.io/github/tag/strider-tech/peach-payments.svg
+[2]: https://img.shields.io/github/release/strider-tech/peach-payments/all.svg
+[3]: https://github.com/strider-tech/peach-payments/releases
+[4]: https://img.shields.io/github/tag/strider-tech/peach-payments.svg
+[5]: https://img.shields.io/packagist/v/strider-tech/peach-payments.svg
