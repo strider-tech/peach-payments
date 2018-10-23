@@ -44,6 +44,47 @@ class PeachPaymentsTest extends TestCase
     }
 
     /**
+     * Create test card token
+     */
+    public function testCreateTestCardToken()
+    {
+        if (config('peachpayments.test_mode') === false) {
+            $this->markTestSkipped('No need to create test card token in `live` mode');
+        }
+
+        $token = \PeachPayments::getTestCardToken();
+        $this->assertNotEmpty($token);
+        $this->assertTrue(is_string($token));
+    }
+
+    /**
+     * Store card by token, get status and pay with card
+     */
+    public function testRegisterCardByTokenAndPay()
+    {
+        $token = \PeachPayments::getTestCardToken();
+        $result = $this->user->storeCardByToken($token);
+
+        $this->assertDatabaseHas('payment_cards', [
+            'id' => 1,
+            'payment_remote_id' => $result->getId()
+        ]);
+
+        $paymentCard = PaymentCard::find(1);
+        $status = $this->user->getPaymentStatusByToken($paymentCard->getPaymentRemoteId());
+        $this->assertObjectHasAttribute('json', $status);
+        $this->assertTrue($status->isSuccess());
+
+        $payment = new Payment();
+        $payment->fromPaymentCard($paymentCard);
+        $payment->setCurrency('ZAR')
+            ->setAmount('50.90');
+        $paymentStatus = $this->user->pay($payment);
+        $this->assertObjectHasAttribute('json', $paymentStatus);
+        $this->assertTrue($paymentStatus->isSuccess());
+    }
+
+    /**
      * Store card, get status and pay with card
      */
     public function testRegisterCardAndPay()
