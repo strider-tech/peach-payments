@@ -2,6 +2,7 @@
 
 namespace StriderTech\PeachPayments\Tests;
 
+use StriderTech\PeachPayments\Cards\Store;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\Enums\CardBrand;
 use StriderTech\PeachPayments\Payment;
@@ -41,6 +42,47 @@ class PeachPaymentsTest extends TestCase
         $client = \PeachPayments::getClient();
 
         $this->assertInstanceOf(Client::class, $client);
+    }
+
+    /**
+     * Create test card token
+     */
+    public function testCreateTestCardToken()
+    {
+        if (config('peachpayments.test_mode') === false) {
+            $this->markTestSkipped('No need to create test card token in `live` mode');
+        }
+
+        $token = $this->getTestCardToken();
+        $this->assertNotEmpty($token);
+        $this->assertTrue(is_string($token));
+    }
+
+    /**
+     * Store card by token, get status and pay with card
+     */
+    public function testRegisterCardByTokenAndPay()
+    {
+        $token = $this->getTestCardToken();
+        $result = $this->user->storeCardByToken($token);
+
+        $this->assertDatabaseHas('payment_cards', [
+            'id' => 1,
+            'payment_remote_id' => $result->getId()
+        ]);
+
+        $paymentCard = PaymentCard::find(1);
+        $status = $this->user->getPaymentStatusByToken($paymentCard->getPaymentRemoteId());
+        $this->assertObjectHasAttribute('json', $status);
+        $this->assertTrue($status->isSuccess());
+
+        $payment = new Payment();
+        $payment->fromPaymentCard($paymentCard);
+        $payment->setCurrency('ZAR')
+            ->setAmount('50.90');
+        $paymentStatus = $this->user->pay($payment);
+        $this->assertObjectHasAttribute('json', $paymentStatus);
+        $this->assertTrue($paymentStatus->isSuccess());
     }
 
     /**
@@ -104,5 +146,23 @@ class PeachPaymentsTest extends TestCase
             'id' => 1,
             'payment_remote_id' => $result->getId()
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    private function getTestCardToken()
+    {
+        $store = new Store(\PeachPayments::getClient());
+        $store->setCardBrand(CardBrand::MASTERCARD)
+            ->setCardNumber('5454545454545454')
+            ->setCardHolder('Jane Jones')
+            ->setCardExpiryMonth('05')
+            ->setCardExpiryYear('2020')
+            ->setCardCvv('123');
+
+        $result = $store->process();
+
+        return $result->getId();
     }
 }
