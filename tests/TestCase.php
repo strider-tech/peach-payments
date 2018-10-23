@@ -93,5 +93,4 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'updated_at' => $now,
         ]);
     }
-
 }

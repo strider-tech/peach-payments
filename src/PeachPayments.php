@@ -2,9 +2,6 @@
 
 namespace StriderTech\PeachPayments;
 
-use StriderTech\PeachPayments\Cards\Store;
-use StriderTech\PeachPayments\Cards\Test;
-use StriderTech\PeachPayments\Enums\CardBrand;
 use StriderTech\PeachPayments\Payments\Notification;
 
 class PeachPayments
@@ -59,23 +56,5 @@ class PeachPayments
         $result = $notification->process();
 
         return $result;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTestCardToken()
-    {
-        $store = new Store($this->getClient());
-        $store->setCardBrand(CardBrand::MASTERCARD)
-            ->setCardNumber('5454545454545454')
-            ->setCardHolder('Jane Jones')
-            ->setCardExpiryMonth('05')
-            ->setCardExpiryYear('2020')
-            ->setCardCvv('123');
-
-        $result = $store->process();
-
-        return $result->getId();
     }
 }

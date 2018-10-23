@@ -2,6 +2,7 @@
 
 namespace StriderTech\PeachPayments\Tests;
 
+use StriderTech\PeachPayments\Cards\Store;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\Enums\CardBrand;
 use StriderTech\PeachPayments\Payment;
@@ -52,7 +53,7 @@ class PeachPaymentsTest extends TestCase
             $this->markTestSkipped('No need to create test card token in `live` mode');
         }
 
-        $token = \PeachPayments::getTestCardToken();
+        $token = $this->getTestCardToken();
         $this->assertNotEmpty($token);
         $this->assertTrue(is_string($token));
     }
@@ -62,7 +63,7 @@ class PeachPaymentsTest extends TestCase
      */
     public function testRegisterCardByTokenAndPay()
     {
-        $token = \PeachPayments::getTestCardToken();
+        $token = $this->getTestCardToken();
         $result = $this->user->storeCardByToken($token);
 
         $this->assertDatabaseHas('payment_cards', [
@@ -145,5 +146,23 @@ class PeachPaymentsTest extends TestCase
             'id' => 1,
             'payment_remote_id' => $result->getId()
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    private function getTestCardToken()
+    {
+        $store = new Store(\PeachPayments::getClient());
+        $store->setCardBrand(CardBrand::MASTERCARD)
+            ->setCardNumber('5454545454545454')
+            ->setCardHolder('Jane Jones')
+            ->setCardExpiryMonth('05')
+            ->setCardExpiryYear('2020')
+            ->setCardCvv('123');
+
+        $result = $store->process();
+
+        return $result->getId();
     }
 }
