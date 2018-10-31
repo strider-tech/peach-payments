@@ -6,6 +6,7 @@ return [
     'password' => env('PEACH_PAYMENTS_PASSWORD'),
     'entity_id' => env('PEACH_PAYMENTS_ENTITY_ID'),
     'test_mode' => env('PEACH_PAYMENTS_TEST_MODE'),
+    'uuid_disable' => env('PEACH_PAYMENTS_UUID_DISABLE'),
     'client_version' => '1.0.0',
     'api_uri_test' => 'https://test.oppwa.com/',
     'api_uri_live' => 'https://oppwa.com/',

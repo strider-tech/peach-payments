@@ -32,6 +32,15 @@ class PaymentCard extends Model
         'deleted_at',
     ];
 
+    public $incrementing;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->incrementing = config('peachpayments.uuid_disable');
+    }
+
     public function user()
     {
         return $this->belongsTo(config('peachpayments.model'));
