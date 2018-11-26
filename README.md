@@ -1,4 +1,4 @@
-# Peach Payments Integration for Laravel [![stability][0]][0.1]
+# Peach Payments Integration for Laravel [![stability][0.2]][0.1]
 [![release][1]][1.1] [![packagist][3]][3.1] [![downloads][5]][3.1]
 
 ## Installation
@@ -73,7 +73,7 @@ $paymentCard = PaymentCard::find($id);
 $payment = new Payment();
 $payment->fromPaymentCard($paymentCard);
 $payment->setCurrency('ZAR')
-    ->setAmount('90.9');
+    ->setAmount(90.9);
     
 $user->pay($payment);
 ```
