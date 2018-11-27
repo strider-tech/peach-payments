@@ -140,7 +140,7 @@ class Capture implements ClientInterface
      */
     public function getAmount()
     {
-        return $this->amount;
+        return number_format($this->amount, 2, '.', '');
     }
 
     /**
