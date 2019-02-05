@@ -6,11 +6,11 @@ use GuzzleHttp\Exception\RequestException;
 use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\ClientInterface;
 use StriderTech\PeachPayments\Enums\PaymentType;
+use StriderTech\PeachPayments\Enums\RecurringType;
 use StriderTech\PeachPayments\Payment;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
- * todo
  * Class Capture
  * @package StriderTech\PeachPayments\Payments
  */
@@ -89,7 +89,7 @@ class Capture implements ClientInterface
      */
     public function getCaptureParams()
     {
-        return [
+        $params = [
             'authentication.userId' => $this->captureClient->getConfig()->getUserId(),
             'authentication.password' => $this->captureClient->getConfig()->getPassword(),
             'authentication.entityId' => $this->captureClient->getConfig()->getEntityId(),
@@ -97,6 +97,12 @@ class Capture implements ClientInterface
             'amount' => $this->getAmount(),
             'currency' => $this->getCurrency(),
         ];
+
+        if (config('peachpayments.skip_3ds_for_stored_cards')) {
+            $params['recurringType'] = RecurringType::REGISTRATION_BASED;
+        }
+
+        return $params;
     }
 
     /**
