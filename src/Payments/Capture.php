@@ -96,11 +96,8 @@ class Capture implements ClientInterface
             'paymentType' => PaymentType::DEBIT,
             'amount' => $this->getAmount(),
             'currency' => $this->getCurrency(),
+            'recurringType' => RecurringType::REPEATED,
         ];
-
-        if (config('peachpayments.skip_3ds_for_stored_cards')) {
-            $params['recurringType'] = RecurringType::REGISTRATION_BASED;
-        }
 
         return $params;
     }
