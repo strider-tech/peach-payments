@@ -69,6 +69,14 @@ class ResponseJson
     /**
      * @return string
      */
+    public function getRegistrationId()
+    {
+        return $this->getPropertyIfExists('registrationId');
+    }
+
+    /**
+     * @return string
+     */
     public function getPaymentType()
     {
         return $this->getPropertyIfExists('paymentType');
