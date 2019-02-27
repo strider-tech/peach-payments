@@ -135,7 +135,7 @@ class ResponseJson
      */
     public function getResultMessage()
     {
-        return $this->getPropertyIfExists('message', $this->getResult());
+        return $this->getPropertyIfExists('message', $this->getResult()) ?: $this->getResultDescription();
     }
 
     /**
