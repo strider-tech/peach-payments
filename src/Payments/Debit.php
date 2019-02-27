@@ -11,7 +11,6 @@ use StriderTech\PeachPayments\Enums\RecurringType;
 use StriderTech\PeachPayments\ResponseJson;
 
 /**
- * todo implement recurring payments
  * Class Debit
  * @package StriderTech\PeachPayments\Payments
  */
@@ -25,6 +24,7 @@ class Debit extends AbstractCard implements ClientInterface
     private $currency = 'ZAR';
     private $paymentType;
     private $createRegistration = false;
+    private $shopperResultUrl;
 
     /**
      * PreAuthorization constructor.
@@ -37,7 +37,7 @@ class Debit extends AbstractCard implements ClientInterface
     }
 
     /**
-     * @return object
+     * @return object|ResponseJson|string
      */
     public function process()
     {
@@ -47,13 +47,16 @@ class Debit extends AbstractCard implements ClientInterface
             return (object)['result' => ['code' => $e->getCode(), 'message' => $e->getMessage()]];
         }
         
-        $appClient = $this->client->getClient();
+        $client = $this->client->getClient();
 
         try {
-            $response = $appClient->post($this->buildUrl(), [
+            $response = $client->post($this->buildUrl(), [
                 'form_params' => $this->getParams()
             ]);
-            return new ResponseJson((string)$response->getBody(), true);
+
+            $jsonResponse = $this->handle($response);
+
+            return $jsonResponse;
         } catch (RequestException $e) {
             return new ResponseJson((string)$e->getResponse()->getBody(), false);
         }
@@ -85,6 +88,7 @@ class Debit extends AbstractCard implements ClientInterface
             'paymentType' => $this->getPaymentType(),
             'amount' => $this->getAmount(),
             'currency' => $this->getCurrency(),
+            'shopperResultUrl' => $this->getShopperResultUrl(),
         ];
 
         // save card and make sure the transaction is done correctly via the INITIAL trigger
@@ -182,13 +186,40 @@ class Debit extends AbstractCard implements ClientInterface
     }
 
     /**
+     * @return boolean
+     */
+    public function getShopperResultUrl()
+    {
+        return $this->shopperResultUrl;
+    }
+
+    /**
+     * @param boolean $shopperResultUrl
+     * @return $this
+     */
+    public function setShopperResultUrl($shopperResultUrl)
+    {
+        $this->shopperResultUrl = $shopperResultUrl;
+
+        return $this;
+    }
+
+    /**
      * Handle response from PP API
      *
      * @param $response
-     * @return string
+     * @return ResponseJson|string
+     * @throws \Exception
      */
     public function handle($response)
     {
-        // TODO: Implement handle() method.
+        $body = (string)$response->getBody();
+        $jsonResponse = new ResponseJson($body, true);
+
+        if (!$jsonResponse->is3DS() && !$jsonResponse->isSuccess()) {
+            throw new \Exception($jsonResponse->getResultMessage());
+        }
+
+        return $jsonResponse;
     }
 }

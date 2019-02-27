@@ -123,13 +123,19 @@ class Client
     /**
      * Get api uri.
      *
+     * @param bool $version
      * @return string
      */
-    public function getApiUri()
+    public function getApiUri($version = true)
     {
+        $uri = config('peachpayments.api_uri_live');
+
         if ($this->isTestMode()) {
-            return config('peachpayments.api_uri_test') . config('peachpayments.api_uri_version');
+            $uri = config('peachpayments.api_uri_test');
         }
-        return config('peachpayments.api_uri_live') . config('peachpayments.api_uri_version');
+
+        return $version
+            ? $uri . config('peachpayments.api_uri_version')
+            : $uri;
     }
 }
