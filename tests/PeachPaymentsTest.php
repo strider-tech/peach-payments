@@ -7,6 +7,7 @@ use StriderTech\PeachPayments\Client;
 use StriderTech\PeachPayments\Enums\CardBrand;
 use StriderTech\PeachPayments\Payment;
 use StriderTech\PeachPayments\PaymentCard;
+use StriderTech\PeachPayments\Payments\Debit;
 
 class PeachPaymentsTest extends TestCase
 {
@@ -95,7 +96,7 @@ class PeachPaymentsTest extends TestCase
             ->setCardNumber('5454545454545454')
             ->setCardHolder('Jane Jones')
             ->setCardExpiryMonth('05')
-            ->setCardExpiryYear('2020')
+            ->setCardExpiryYear(date('Y', strtotime('+1 year')))
             ->setCardCvv('123');
         $result = $this->user->storeCard($card);
 
@@ -119,6 +120,17 @@ class PeachPaymentsTest extends TestCase
     }
 
     /**
+     * Store 3DS card
+     */
+    public function testRegister3DSCard()
+    {
+        $result = $this->getTestCard3DSToken();
+
+        $this->assertObjectHasAttribute('json', $result);
+        $this->assertTrue($result->is3DS());
+    }
+
+    /**
      * Store card and delete
      */
     public function testDeleteCard()
@@ -128,7 +140,7 @@ class PeachPaymentsTest extends TestCase
             ->setCardNumber('5454545454545454')
             ->setCardHolder('Jane Jones')
             ->setCardExpiryMonth('05')
-            ->setCardExpiryYear('2020')
+            ->setCardExpiryYear(date('Y', strtotime('+1 year')))
             ->setCardCvv('123');
         $result = $this->user->storeCard($card);
 
@@ -158,11 +170,33 @@ class PeachPaymentsTest extends TestCase
             ->setCardNumber('5454545454545454')
             ->setCardHolder('Jane Jones')
             ->setCardExpiryMonth('05')
-            ->setCardExpiryYear('2020')
+            ->setCardExpiryYear(date('Y', strtotime('+1 year')))
             ->setCardCvv('123');
 
         $result = $store->process();
 
         return $result->getId();
+    }
+
+    /**
+     * @return object|\StriderTech\PeachPayments\ResponseJson|string
+     */
+    private function getTestCard3DSToken()
+    {
+        $debit = new Debit(\PeachPayments::getClient());
+        $debit->setCreateRegistration(true)
+            ->setAuthOnly(true)
+            ->setCardBrand(CardBrand::VISA)
+            ->setCardNumber('4012888888881881')
+            ->setCardHolder('Jane Jones')
+            ->setCardExpiryMonth('05')
+            ->setCardExpiryYear(date('Y', strtotime('+1 year')))
+            ->setCardCvv('123')
+            ->setShopperResultUrl(config('peachpayments.notification_url'))
+        ;
+
+        $result = $debit->process();
+
+        return $result;
     }
 }

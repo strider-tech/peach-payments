@@ -1,6 +1,7 @@
 <?php
 
 namespace StriderTech\PeachPayments;
+use StriderTech\PeachPayments\Enums\ResponseCodeType;
 
 /**
  * Class ResponseJson
@@ -40,6 +41,22 @@ class ResponseJson
     public function __toString()
     {
         return $this->jsonString;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function is3DS()
+    {
+        return boolval($this->get3DSRedirect());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function get3DSRedirect()
+    {
+        return $this->getPropertyIfExists('redirect');
     }
 
     /**
@@ -278,10 +295,10 @@ class ResponseJson
      */
     public function getSuccessCode()
     {
-        $code = '000.000.000';
+        $code = ResponseCodeType::LIVE_MODE_SUCCESS;
 
         if (config('peachpayments.test_mode') === true) {
-            $code = '000.100.110';
+            $code = ResponseCodeType::TEST_MODE_SUCCESS;
         }
 
         return $code;

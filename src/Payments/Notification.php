@@ -56,7 +56,7 @@ class Notification implements ClientInterface
 
             return $jsonResponse;
         } catch (RequestException $e) {
-            throw new \Exception((string)$e->getResponse()->getBody());
+            return $this->handle($e->getResponse());
         }
     }
 
@@ -65,7 +65,7 @@ class Notification implements ClientInterface
      */
     public function buildUrl()
     {
-        return $this->client->getApiUri() . $this->resourcePath .
+        return $this->client->getApiUri(false) . $this->resourcePath .
             '?authentication.userId=' . $this->client->getConfig()->getUserId() .
             '&authentication.password=' . $this->client->getConfig()->getPassword() .
             '&authentication.entityId=' . $this->client->getConfig()->getEntityId();

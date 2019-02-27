@@ -11,4 +11,5 @@ return [
     'api_uri_live' => 'https://oppwa.com/',
     'api_uri_version' => 'v1',
     'skip_3ds_for_stored_cards' => true,
+    'notification_url' => env('PEACH_PAYMENTS_NOTIFICATION_URL'),
 ];

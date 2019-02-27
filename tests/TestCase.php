@@ -56,6 +56,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'api_uri_test' => 'https://test.oppwa.com/',
             'api_uri_live' => 'https://oppwa.com/',
             'api_uri_version' => 'v1',
+            'notification_url' => 'https://peachpayments.docs.oppwa.com/tutorials/server-to-server',
         ]);
     }
 
