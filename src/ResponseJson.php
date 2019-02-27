@@ -47,7 +47,7 @@ class ResponseJson
      */
     public function isSuccess()
     {
-        return $this->success;
+        return $this->getResultCode() === $this->getSuccessCode() && $this->success;
     }
 
     /**
@@ -271,5 +271,19 @@ class ResponseJson
 
         // nothing found lets return an empty string
         return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuccessCode()
+    {
+        $code = '000.000.000';
+
+        if (config('peachpayments.test_mode') === true) {
+            $code = '000.100.110';
+        }
+
+        return $code;
     }
 }
