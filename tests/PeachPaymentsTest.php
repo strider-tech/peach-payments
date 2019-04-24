@@ -80,7 +80,8 @@ class PeachPaymentsTest extends TestCase
         $payment = new Payment();
         $payment->fromPaymentCard($paymentCard);
         $payment->setCurrency('ZAR')
-            ->setAmount(50.9);
+            ->setAmount(50.9)
+            ->setMerchantTransactionId('123');
         $paymentStatus = $this->user->pay($payment);
         $this->assertObjectHasAttribute('json', $paymentStatus);
         $this->assertTrue($paymentStatus->isSuccess());
@@ -113,7 +114,8 @@ class PeachPaymentsTest extends TestCase
         $payment = new Payment();
         $payment->fromPaymentCard($paymentCard);
         $payment->setCurrency('ZAR')
-            ->setAmount(50.9);
+            ->setAmount(50.9)
+            ->setMerchantTransactionId('123');
         $paymentStatus = $this->user->pay($payment);
         $this->assertObjectHasAttribute('json', $paymentStatus);
         $this->assertTrue($paymentStatus->isSuccess());

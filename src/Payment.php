@@ -133,6 +133,24 @@ class Payment extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getMerchantTransactionId()
+    {
+        return $this->merchant_transaction_id;
+    }
+
+    /**
+     * @param string $merchantTransactionId
+     * @return $this
+     */
+    public function setMerchantTransactionId($merchantTransactionId)
+    {
+        $this->merchant_transaction_id = $merchantTransactionId;
+        return $this;
+    }
+
+    /**
      * @param PaymentCard $paymentCard
      * @return $this
      */
