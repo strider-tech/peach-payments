@@ -32,6 +32,10 @@ class Capture implements ClientInterface
      * @var float
      */
     private $amount;
+    /**
+     * @var string
+     */
+    private $merchantTransactionId;
 
     /**
      * Capture constructor.
@@ -97,6 +101,7 @@ class Capture implements ClientInterface
             'amount' => $this->getAmount(),
             'currency' => $this->getCurrency(),
             'recurringType' => RecurringType::REPEATED,
+            'merchantTransactionId' => $this->getMerchantTransactionId()
         ];
 
         return $params;
@@ -184,8 +189,27 @@ class Capture implements ClientInterface
         $this->setRegistrationId($payment->getPaymentRemoteId())
             ->setAmount($payment->getAmount())
             ->setCurrency($payment->getCurrency())
+            ->setMerchantTransactionId($payment->getMerchantTransactionId())
         ;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantTransactionId()
+    {
+        return $this->merchantTransactionId;
+    }
+
+    /**
+     * @param string $merchantTransactionId
+     * @return $this
+     */
+    public function setMerchantTransactionId($merchantTransactionId)
+    {
+        $this->merchantTransactionId = $merchantTransactionId;
         return $this;
     }
 }
