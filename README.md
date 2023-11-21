@@ -3,7 +3,13 @@
 
 ## Installation
 
-In Laravel versions >= 5.5 the service provider and facade will automatically be registered and enabled. 
+In Laravel versions >= 5.5 the service provider and facade will automatically be registered and enabled.
+
+Install via composer
+
+```bash
+composer require strider-tech/peach-payments
+```
 
 In older versions of the framework just add the package service provider and facade in 'config/app.php' file:
 ```php
