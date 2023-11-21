@@ -10,6 +10,7 @@
         "payments api"
     ],
     "require": {
+        "guzzlehttp/guzzle": "^6.3",
         "inacho/php-credit-card-validator": "^1.0"
     },
     "require-dev": {
